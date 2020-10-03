@@ -96,6 +96,11 @@ app.post('/register', function(req, res){
     });
 });
 
+/* cart Routes */
+app.get('/cart', function(req, res){
+    res.render('cart');
+});
+
 /* Logout Route */
 app.get('/logout', function(req, res){
    req.session.destroy();
