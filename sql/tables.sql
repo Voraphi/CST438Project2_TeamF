@@ -25,7 +25,7 @@ DROP TABLE IF EXISTS `items`;
 
 CREATE TABLE `items` (
   `itemId` mediumint(9) NOT NULL,
-  `userId` mediumint(9) NOT NULL,
+  `sellerId` mediumint(9) NOT NULL,
   `itemlink` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `itemname` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `color` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS `orderhistory`;
 CREATE TABLE `orderhistory` (
 	`orederId` mediumint(9) NOT NULL,
 	`userId` mediumint(9) NOT NULL,
-	`sellerId` mediumint(9) NOT NULL,
+	`itemId` mediumint(9) NOT NULL,
   `itemlink` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `itemname` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `color` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
@@ -63,6 +63,21 @@ ALTER TABLE `orderhistory`
 ALTER TABLE `orderhistory`
   MODIFY `orederId` mediumint(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
+
+
+DROP TABLE IF EXISTS `cart`;
+
+CREATE TABLE `cart` (
+	`cartId` mediumint(9) NOT NULL,
+	`itemId` mediumint(9) NOT NULL,
+  `units` mediumint(9) NOT NULL,
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ALTER TABLE `cart`
+  ADD PRIMARY KEY (`cartId`);
+
+ALTER TABLE `cart`
+  MODIFY `cartId` mediumint(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 COMMIT;
 
