@@ -54,8 +54,18 @@ function checkPassword(password, hash){
 }
 
 /* Home Route*/
-app.get('/', function(req, res){
-    res.render('home');
+app.get('/', function(req, res) {
+    
+    let stmt = 'SELECT * FROM items';
+    
+    connection.query(stmt, function(error, results) {
+        if (error) throw error;
+        if (results.length) {
+            console.log(results)
+            res.render("home", { results: results });
+        }
+    });
+    
 });
 
 /* Login Routes */
@@ -111,6 +121,15 @@ app.get('/logout', function(req, res){
 app.get('/welcome', isAuthenticated, function(req, res){
    res.render('welcome', {user: req.session.user}); 
 });
+
+app.get('/receipt', isAuthenticated, function(req, res){
+   res.render('receipt', {user: req.session.user}); 
+});
+
+app.get('/orederhistory', isAuthenticated, function(req, res){
+   res.render('orederhistory', {user: req.session.user}); 
+});
+
 
 /* Error Route*/
 app.get('*', function(req, res){
