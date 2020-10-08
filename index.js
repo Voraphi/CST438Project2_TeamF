@@ -19,10 +19,10 @@ app.use(session({
 app.set('view engine', 'ejs');
 
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'admin',
-    password: 'admin',
-    database: 'webstoredb'
+    host: process.env.HOST,
+    user: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 });
  connection.connect();
 
@@ -61,7 +61,7 @@ app.get('/', function(req, res) {
     connection.query(stmt, function(error, results) {
         if (error) throw error;
         if (results.length) {
-            console.log(results)
+            // console.log(results)
             res.render("home", { results: results });
         }
     });
