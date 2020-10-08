@@ -24,8 +24,15 @@ const connection = mysql.createConnection({
     password: process.env.PASSWORD,
     database: process.env.DATABASE
 });
- connection.connect();
+connection.connect();
 
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'admin',
+//     password: 'admin',
+//     database: 'webstoredb'
+// });
+// connection.connect();
 
 
 /* Middleware */
