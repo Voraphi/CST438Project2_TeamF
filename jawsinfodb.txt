@@ -1,0 +1,6 @@
+mysql://bzr2y6gjulnxjday:hl0jacjcmroizvln@uc13jynhmkss3nve.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/y5pgo5py10vw3kbb
+username = bzr2y6gjulnxjday
+password = hl0jacjcmroizvln
+host = uc13jynhmkss3nve.cbetxkdyhwsb.us-east-1.rds.amazonaws.com
+port = 3306
+database = y5pgo5py10vw3kbb
