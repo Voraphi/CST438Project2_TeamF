@@ -143,6 +143,11 @@ app.get('/logout', function(req, res){
    res.redirect('/');
 });
 
+/* Checkout Routes */
+app.get('/checkout', function(req, res){
+    res.render('checkout');
+});
+
 /* Welcome Route */
 app.get('/welcome', isAuthenticated, function(req, res){
    res.render('welcome', {user: req.session.user}); 
