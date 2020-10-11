@@ -18,21 +18,21 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 
-const connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
-});
+// const connection = mysql.createConnection({
+//     host: process.env.HOST,
+//     user: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//     database: process.env.DATABASE
+// });
 connection.connect();
 
-// const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'admin',
-//     password: 'admin',
-//     database: 'webstoredb'
-// });
-// connection.connect();
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'admin',
+    database: 'webstoredb'
+});
+connection.connect();
 
 
 /* Middleware */
