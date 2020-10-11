@@ -101,6 +101,7 @@ app.post('/login', async function(req, res){
 app.get('/register', function(req, res){
     res.render('register');
 });
+
 app.post('/register', function(req, res){
     let salt = 10;
     console.log(req.body.password,req.body.username);
@@ -114,9 +115,11 @@ app.post('/register', function(req, res){
         });
     });
 });
+
 app.get('/additem',isAuthenticated, function(req, res){
     res.render('additem');
 });
+
 app.post('/additem', function(req, res){
     let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     console.log(req.body.price);
@@ -132,6 +135,7 @@ app.post('/additem', function(req, res){
        res.redirect('/additem');
     });
 });
+
 /* cart Routes */
 app.get('/cart', function(req, res){
     res.render('cart');
