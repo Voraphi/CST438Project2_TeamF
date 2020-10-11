@@ -37,7 +37,7 @@ CREATE TABLE `items` (
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `unitsleft` mediumint(9) NOT NULL,
   `price` float(6,2) NOT NULL,
-  `desc` varchar(2000) COLLATE utf8_unicode_ci NOT NULL
+  `description` varchar(2000) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE `items`
@@ -47,7 +47,7 @@ ALTER TABLE `items`
   MODIFY `itemId` mediumint(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 
-INSERT INTO `items` (`itemId`, `sellerId`, `itemlink`, `itemname`, `color`, `category`, `unitsleft`, `price`, `desc`) VALUES
+INSERT INTO `items` (`itemId`, `sellerId`, `itemlink`, `itemname`, `color`, `category`, `unitsleft`, `price`, `description`) VALUES
 (1, 1, 'https://images.vans.com/is/image/Vans/EYEBWW-HERO?$583x583$', 'Some Vans', 'checkered black and white', 'shoes', 8, 49.99, 'decent quality barely worn'),
 (2, 1, 'https://images.vans.com/is/image/Vans/D3HY28-HERO?$583x583$', 'Vans Shoes', 'classics', 'shoes', 4, 50.00, 'great quality'),
 (3, 2, 'https://img.shopstyle-cdn.com/sim/c4/ca/c4cab75da6e5d5e5112685a16edf5ef3_best/tropical-animal-check-era.jpg', 'Tropical Vans', 'tropical', 'shoes', 9, 79.99, 'brand new'),
@@ -70,6 +70,7 @@ CREATE TABLE `orderhistory` (
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `unitspurchased` mediumint(9) COLLATE utf8_unicode_ci NOT NULL,
   `price` float(6,2) NOT NULL,
+  `description` varchar(2000) COLLATE utf8_unicode_ci NOT NULL,
   `datapurchased` DATE NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

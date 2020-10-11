@@ -118,7 +118,7 @@ app.get('/additem',isAuthenticated, function(req, res){
     res.render('additem');
 });
 app.post('/additem', function(req, res){
-    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, desc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
     console.log(req.body.price);
     console.log(req.body.itemlink);
     console.log(req.body.itemname);
