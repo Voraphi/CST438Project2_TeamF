@@ -18,14 +18,21 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 
+// const connection = mysql.createConnection({
+//     host: process.env.HOST,
+//     user: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//     database: process.env.DATABASE
+// });
+// connection.connect();
+
 const connection = mysql.createConnection({
     host: 'localhost',
     user: 'admin',
     password: 'admin',
     database: 'webstoredb'
 });
- connection.connect();
-
+connection.connect();
 
 
 /* Middleware */
@@ -61,7 +68,7 @@ app.get('/', function(req, res) {
     connection.query(stmt, function(error, results) {
         if (error) throw error;
         if (results.length) {
-            console.log(results)
+            // console.log(results)
             res.render("home", { results: results });
         }
     });
@@ -80,6 +87,9 @@ app.post('/login', async function(req, res){
     if(passwordMatch){
         req.session.authenticated = true;
         req.session.user = isUserExist[0].username;
+        console.log(isUserExist[0]);
+        req.session.sellerId = isUserExist[0].userId;
+        console.log(req.session.sellerId);
         res.redirect('/welcome');
     }
     else{
@@ -91,7 +101,6 @@ app.post('/login', async function(req, res){
 app.get('/register', function(req, res){
     res.render('register');
 });
-
 app.post('/register', function(req, res){
     let salt = 10;
     console.log(req.body.password,req.body.username);
@@ -105,7 +114,24 @@ app.post('/register', function(req, res){
         });
     });
 });
-
+app.get('/additem',isAuthenticated, function(req, res){
+    res.render('additem');
+});
+app.post('/additem', function(req, res){
+    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, desc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    console.log(req.body.price);
+    console.log(req.body.itemlink);
+    console.log(req.body.itemname);
+    console.log(req.body.color);
+    console.log(req.body.category);
+    console.log(req.body.unitsleft);
+    console.log(req.body.desc);
+    let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
+    connection.query(stmt, data, function(error, result){
+       if(error) throw error;
+       res.redirect('/additem');
+    });
+});
 /* cart Routes */
 app.get('/cart', function(req, res){
     res.render('cart');
