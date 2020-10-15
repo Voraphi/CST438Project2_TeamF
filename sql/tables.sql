@@ -87,6 +87,7 @@ DROP TABLE IF EXISTS `cart`;
 CREATE TABLE `cart` (
 	`cartId` mediumint(9) NOT NULL,
 	`itemId` mediumint(9) NOT NULL,
+	`userId` mediumint(9) NOT NULL,
   `units` mediumint(9) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 

@@ -60,6 +60,18 @@ function checkPassword(password, hash){
     });
 }
 
+
+function query(stmt, data) {
+    return new Promise(function(resolve, reject) {
+        connection.query(stmt, data, function(error, result) {
+            if (error) throw error;
+            
+            resolve(result);
+        });
+    });
+}
+
+
 /* Home Route*/
 app.get('/', function(req, res) {
     
@@ -69,7 +81,7 @@ app.get('/', function(req, res) {
         if (error) throw error;
         if (results.length) {
             // console.log(results)
-            res.render("home", { results: results });
+            res.render("home", { results: results, userauth: req.session.authenticated });
         }
     });
     
@@ -87,9 +99,9 @@ app.post('/login', async function(req, res){
     if(passwordMatch){
         req.session.authenticated = true;
         req.session.user = isUserExist[0].username;
-        console.log(isUserExist[0]);
+        // console.log(isUserExist[0]);
         req.session.sellerId = isUserExist[0].userId;
-        console.log(req.session.sellerId);
+        // console.log(req.session.sellerId);
         res.redirect('/welcome');
     }
     else{
@@ -122,13 +134,13 @@ app.get('/additem',isAuthenticated, function(req, res){
 
 app.post('/additem', function(req, res){
     let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    console.log(req.body.price);
-    console.log(req.body.itemlink);
-    console.log(req.body.itemname);
-    console.log(req.body.color);
-    console.log(req.body.category);
-    console.log(req.body.unitsleft);
-    console.log(req.body.desc);
+    // console.log(req.body.price);
+    // console.log(req.body.itemlink);
+    // console.log(req.body.itemname);
+    // console.log(req.body.color);
+    // console.log(req.body.category);
+    // console.log(req.body.unitsleft);
+    // console.log(req.body.desc);
     let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
     connection.query(stmt, data, function(error, result){
        if(error) throw error;
@@ -137,8 +149,77 @@ app.post('/additem', function(req, res){
 });
 
 /* cart Routes */
-app.get('/cart', function(req, res){
-    res.render('cart');
+app.get('/cart', isAuthenticated, async function(req, res){
+    
+    let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
+    let cart_data = [req.session.sellerId]
+    
+    connection.query(cart_stmt, cart_data, function(error, results) {
+       if (error) throw error;
+       
+    //   console.log(results);
+       
+       res.render('cart', {results : results});
+       
+    });
+    
+    
+    // let cart_data = [req.session.sellerId];
+    
+    
+    // let result = await query(cart_stmt, cart_data);
+
+
+    // console.log(result);
+    // var items = [];
+        
+    //     // console.log(result);
+        
+    // result.forEach(async function (r) {
+    //     let item_stmt = 'select * from items where itemId = ?'
+    //     let item_data = [r.itemId];
+        
+    //     let data = await query(item_stmt, item_data);
+       
+    //     console.log(data[0]);
+    //     items.push(Object.values(JSON.parse(JSON.stringify(data[0]))));
+
+        
+    // });
+    
+    // items.forEach(function(v){ console.log(v) });
+    
+    // console.log(items);
+    
+    
+});
+
+app.post('/updatecart', async function(req, res) {
+    
+    let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
+    let cart_data = [req.session.sellerId];
+    
+    var r = await query(cart_stmt, cart_data);
+    
+    // connection.query(cart_stmt, cart_data, function(error, results) {
+    //   if (error) throw error;
+       
+    //   console.log("hmm");
+       
+    // });
+    
+    console.log(r);
+    
+    console.log(req.body.leng);
+    
+    for(var i = 0; i < req.body.leng; i++) {
+        
+        
+        
+    }
+    
+    res.redirect('/cart');
+    
 });
 
 /* Logout Route */
@@ -147,9 +228,40 @@ app.get('/logout', function(req, res){
    res.redirect('/');
 });
 
+app.post('/addtocart', function(req, res) {
+   
+   let stmt = 'insert into cart (itemId, userId, units) VALUES (?, ?, ?)';
+   
+   let data = [parseInt(req.body.itemId), req.session.sellerId, 1];
+   
+   console.log(data);
+   
+  connection.query(stmt, data, function(error, result) {
+      if (error) throw error;
+     
+      res.redirect('/');
+  });
+   
+    
+});
+
+
 /* Checkout Routes */
-app.get('/checkout', function(req, res){
-    res.render('checkout');
+app.get('/checkout', isAuthenticated, function(req, res){
+    
+      let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
+    let cart_data = [req.session.sellerId]
+    
+    connection.query(cart_stmt, cart_data, function(error, results) {
+        if (error) throw error;
+       
+    //   console.log(results);
+       
+        // res.render('cart', {results : results});
+        res.render('checkout', {results : results});
+       
+    });
+    
 });
 
 /* Welcome Route */

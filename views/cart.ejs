@@ -3,6 +3,7 @@
 <!-- Cart items -->
 
 <div class="small-container cart-page">
+    <form action='/updatecart' method='POST'>
     
     <table>
         <tr>
@@ -10,50 +11,79 @@
             <th>Quantity</th>
             <th>Subtotal</th>
         </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="/img/noname.png">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="">Remove</a>
+        
+        <% var num = 0 %>
+        
+        <% results.forEach(function(r) { %>
+        
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src='<%= r.itemlink %>'>
+                        <div>
+                            <p><%= r.itemName %></p>
+                            <small>Price: $<%= r.price %></small>
+                            <br>
+                            <a href="#">Remove</a>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
-                <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="/img/noname.png">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="/img/noname.png">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
-                <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="..">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
+                </td>
+                <td><input type="number" name="name<%= num %>" value="<%= r.units %>" min="1" max="<%= r.unitsleft %>"></td>
+                <td> $<%= r.price * r.units %> </td>
+            </tr>
+            
+            <% num++ %>
+        
+        <% });%>
+        <!--<tr>-->
+        <!--    <td>-->
+        <!--        <div class="cart-info">-->
+        <!--            <img src="/img/noname.png">-->
+        <!--            <div>-->
+        <!--                <p>Item # 1 Name</p>-->
+        <!--                <small>Price: $0.00</small>-->
+        <!--                <br>-->
+        <!--                <a href="">Remove</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </td>-->
+        <!--    <td><input type="number" value="1"></td>-->
+        <!--    <td>$20.00</td>-->
+        <!--</tr>-->
+        <!--        <tr>-->
+        <!--    <td>-->
+        <!--        <div class="cart-info">-->
+        <!--            <img src="/img/noname.png">-->
+        <!--            <div>-->
+        <!--                <p>Item # 1 Name</p>-->
+        <!--                <small>Price: $0.00</small>-->
+        <!--                <br>-->
+        <!--                <a href="/img/noname.png">Remove</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </td>-->
+        <!--    <td><input type="number" value="1"></td>-->
+        <!--    <td>$20.00</td>-->
+        <!--</tr>-->
+        <!--        <tr>-->
+        <!--    <td>-->
+        <!--        <div class="cart-info">-->
+        <!--            <img src="..">-->
+        <!--            <div>-->
+        <!--                <p>Item # 1 Name</p>-->
+        <!--                <small>Price: $0.00</small>-->
+        <!--                <br>-->
+        <!--                <a href="">Remove</a>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <!--    </td>-->
+        <!--    <td><input type="number" value="1"></td>-->
+        <!--    <td>$20.00</td>-->
+        <!--</tr>-->
     </table>
+    
+        <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;'>
+        
+        <button type="submit" class="btn btn-outline-warning">update cart</button>
+    </form>
 </div> 

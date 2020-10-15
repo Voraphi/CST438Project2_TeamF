@@ -1,5 +1,6 @@
 <%- include ('templates/header'); -%>
-<%- include ('templates/notauthnav'); -%>
+
+<%- include ('templates/authnav'); -%>
 <br>
 
 <div class="row">
@@ -11,22 +12,22 @@
           <div class="col-50">
             <h3>User Information</h3>
             <label for="name">Full Name</label>
-            <input type="text" id="name" name="Name" placeholder="Tyler Adams">
+            <input type="text" id="name" name="Name" placeholder="Tyler Adams" required>
             <label for="email">Email</label>
-            <input type="text" id="email" name="email" placeholder="tyleradams@gmail.com">
+            <input type="text" id="email" name="email" placeholder="tyleradams@gmail.com" required>
             <label for="adr">Address</label>
-            <input type="text" id="adr" name="address" placeholder="100 Campus Center">
+            <input type="text" id="adr" name="address" placeholder="100 Campus Center" required>
             <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="Seaside">
+            <input type="text" id="city" name="city" placeholder="Seaside" required>
 
             <div class="row">
               <div class="col-50">
                 <label for="state">State</label>
-                <input type="text" id="state" name="state" placeholder="CA">
+                <input type="text" id="state" name="state" placeholder="CA" required>
               </div>
               <div class="col-50">
                 <label for="zip">Zip</label>
-                <input type="text" id="zip" name="zip" placeholder="93955">
+                <input type="text" id="zip" name="zip" placeholder="93955" required>
               </div>
             </div>
           </div>
@@ -35,20 +36,20 @@
             <h3>Payment</h3>
             
             <label for="cname">Name on Card</label>
-            <input type="text" id="cname" name="cardname" placeholder="John More Doe">
+            <input type="text" id="cname" name="cardname" placeholder="John More Doe" required>
             <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444">
+            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" required>
             <label for="expmonth">Exp Month</label>
-            <input type="text" id="expmonth" name="expmonth" placeholder="September">
+            <input type="text" id="expmonth" name="expmonth" placeholder="September" required>
 
             <div class="row">
               <div class="col-50">
                 <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="2018">
+                <input type="text" id="expyear" name="expyear" placeholder="2018" required>
               </div>
               <div class="col-50">
                 <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="352">
+                <input type="text" id="cvv" name="cvv" placeholder="352" required>
               </div>
             </div>
           </div>
@@ -70,12 +71,21 @@
           <b>4</b>
         </span>
       </h4>
-      <p><a href="#">Item 1</a> <span class="price">$0.00</span></p>
-      <p><a href="#">Item 2</a> <span class="price">$0.00</span></p>
-      <p><a href="#">Item 3</a> <span class="price">$0.00</span></p>
-      <p><a href="#">Item 4</a> <span class="price">$0.00</span></p>
+      
+      <% var total = 0 %>
+      
+      <% results.forEach(function(r) {  %>
+      
+        <p><a href="#"><%= r.itemname %></a> <span class="price">$<%= r.price * r.units %></span></p>
+      
+        <% total += (r.price * r.units) %>
+      <% });%>
+      
+      <!--<p><a href="#">Item 2</a> <span class="price">$0.00</span></p>-->
+      <!--<p><a href="#">Item 3</a> <span class="price">$0.00</span></p>-->
+      <!--<p><a href="#">Item 4</a> <span class="price">$0.00</span></p>-->
       <hr>
-      <p>Total <span class="price" style="color:black"><b>$0.00</b></span></p>
+      <p>Total <span class="price" style="color:black"><b>$<%= total %></b></span></p>
     </div>
   </div>
 </div>
