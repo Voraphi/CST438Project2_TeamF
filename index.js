@@ -208,13 +208,24 @@ app.post('/updatecart', async function(req, res) {
        
     // });
     
-    console.log(r);
+    // console.log(r);
     
-    console.log(req.body.leng);
+    // console.log(req.body.leng);
     
     for(var i = 0; i < req.body.leng; i++) {
         
+        // console.log(req.body["name" + i],  " : ", r[i].itemId);
+        // console.log();
+        // console.log("\n");
         
+        // console.log(Object.assign("name"+i, req.body));
+        
+        let up_stmt = 'update cart set units = ? where cartId = ?';
+        let up_data = [req.body["name" + i], r[i].cartId];
+        
+        let up_query = await query(up_stmt, up_data);
+        
+        console.log(up_query, "from : ", r[i].units);
         
     }
     
