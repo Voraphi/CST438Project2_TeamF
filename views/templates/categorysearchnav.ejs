@@ -4,15 +4,25 @@
   </button>
   <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
     <a class="navbar-brand" href="/">Home</a>
-    <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-      <li class="nav-item active">
-        <a class="nav-link" href="/login">Login <span class="sr-only">(current)</span></a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="/register">Register</a>
-      </li>
+    <ul class="navbar-nav mr-auto mt-2 mt-lg-0"></ul>
       
+
     </ul>
+    
+    
+    <form class="form-inline my-2 my-lg-0" action="/searchcategory" method="POST">
+      <select class="form-control" name="category">
+        <option value="hat">Hat</option>
+        <option value="sweater">Sweater</option>
+        <option value="shirt">Shirt</option>
+        <option value="pants">Pants</option>
+        <option value="shoes">Shoes</option>
+      </select>
+      <button type="submit" class="btn btn-outline-success">Search</button>
+    </form>
+    
+    
+    
     <form class="form-inline my-2 my-lg-0">
       <!--<input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">-->
       <div class="btn-group">

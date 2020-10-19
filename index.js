@@ -233,6 +233,13 @@ app.post('/updatecart', async function(req, res) {
     
 });
 
+app.post("/removeitem", function(req, res) {
+   
+   
+    
+});
+
+
 /* Logout Route */
 app.get('/logout', function(req, res){
    req.session.destroy();
@@ -285,15 +292,41 @@ app.get('/receipt', isAuthenticated, function(req, res){
 });
 
 app.get('/orederhistory', isAuthenticated, function(req, res){
+    
+    
+    //select distinct date from orderhistory where userId = req.session.sellerId
+    
+    //select * from orderhistory where userId = req.session.sellerId
+    
+    //render
+    
+    
    res.render('orederhistory', {user: req.session.user}); 
 });
 
 app.get('/searchkeywords', isAuthenticated, function(req, res) {
     
-    let stmt = 'select * from items where itemname LIKE %?% or color LIKE %?% or description LIKE %?%';
-    let data = [req.body.keyword, req.body.keyword, req.body.keyword];
+  res.render("searchkeywords");
+  
+});
+
+app.post("/searchkeywords", function(req, res) {
     
-    connection.query(stmt, data, function(error, result) {
+    let words = req.body.words;
+    
+    res.redirect("searchkeywords/" + words);
+    
+});
+
+app.get('/searchkeywords/:words', isAuthenticated, function(req, res) {
+    
+    // let stmt = 'select * from items where itemname LIKE `%?%` or color LIKE `%?%` or description LIKE `%?%`;
+    
+    let stmt = 'select * from items where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
+    
+    // let data = [req.params.words, req.params.words, req.params.words];
+    
+    connection.query(stmt, function(error, result) {
        if (error) throw error;
        res.render("searchkeywords", { results: result });
     });
@@ -302,8 +335,22 @@ app.get('/searchkeywords', isAuthenticated, function(req, res) {
 
 app.get('/searchcategory', isAuthenticated, function(req, res) {
     
-    let stmt = 'select * from items where category LIKE %?%';
-    let data = [req.body.category];
+  res.render("searchcategory");
+  
+});
+
+app.post('/searchcategory', function(req, res) {
+    let category = req.body.category;
+    
+    res.redirect("searchcategory/" + category);
+  
+});
+
+
+app.get('/searchcategory/:category', isAuthenticated, function(req, res) {
+    
+    let stmt = 'select * from items where category = ?';
+    let data = [req.params.category];
     
     connection.query(stmt, data, function(error, result) {
        if (error) throw error;
