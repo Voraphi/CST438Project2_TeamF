@@ -26,7 +26,11 @@
                             <p><%= r.itemName %></p>
                             <small>Price: $<%= r.price %></small>
                             <br>
-                            <a href="#">Remove</a>
+                            
+                            <form action='/removefromcart' method='POST'>
+                                <input type='number' class='form-control' name='cartId' value='<%= r.cartId %>' style="visibility: hidden;">
+                                <button type="submit" class="btn-danger">Remove</button>
+                            </form>
                         </div>
                     </div>
                 </td>
@@ -86,7 +90,7 @@
     
         <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;'>
         
-        <button type="submit" class="btn btn-outline-warning">update cart</button>
+        <button type="submit" class=" btn btn-outline-warning">update cart</button>
     </form>
 </div> 
 

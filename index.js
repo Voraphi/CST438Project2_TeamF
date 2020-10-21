@@ -75,7 +75,7 @@ function query(stmt, data) {
 /* Home Route*/
 app.get('/', function(req, res) {
     
-    let stmt = 'SELECT * FROM items';
+    let stmt = 'SELECT * FROM items inner join users on userId = sellerId';
     
     connection.query(stmt, function(error, results) {
         if (error) throw error;
@@ -147,6 +147,22 @@ app.post('/additem', function(req, res){
        res.redirect('/additem');
     });
 });
+
+app.get('/item/:itemId', async function(req, res) {
+    
+    let stmt = 'select * from items where itemId = ?';
+    
+    let data = [req.params.itemId];
+    
+    console.log(data);
+    
+    let q = await query(stmt, data);
+    
+    console.log(q);
+    
+    // res.render("/item", );
+    
+})
 
 /* cart Routes */
 app.get('/cart', isAuthenticated, async function(req, res){
@@ -262,6 +278,23 @@ app.post('/addtocart', function(req, res) {
    
     
 });
+
+
+app.post('/removefromcart', async function(req, res) {
+    
+    let stmt = 'delete from cart where cartId = ?';
+    
+    let data = [req.body.cartId];
+    
+    console.log(data);
+    
+    let q = await query(stmt, data);
+    
+    console.log(q);
+    
+    res.redirect("/cart");
+    
+})
 
 
 /* Checkout Routes */
