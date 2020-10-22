@@ -1,8 +1,11 @@
 <%- include ('templates/header'); -%>
 
+<%- include ('templates/authnav'); -%>
+
 <!-- Cart items -->
 
 <div class="small-container cart-page">
+    <form id="main-form" action='/updatecart' method='POST'/>
     
     <table>
         <tr>
@@ -10,50 +13,46 @@
             <th>Quantity</th>
             <th>Subtotal</th>
         </tr>
-        <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="/img/noname.png">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="">Remove</a>
+        
+        <% var num = 0 %>
+        
+        <% results.forEach(function(r) { %>
+        
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src='<%= r.itemlink %>'>
+                        <div>
+                            <p><%= r.itemname %></p>
+                            <small>Price: $<%= r.price %></small>
+                            <br>
+                            
+                            <form id='form<%= r.cartId %>' action='/removefromcart' method='POST'>
+                                <input type='number' class='form-control' name='cartId' value='<%= r.cartId %>' style="visibility: hiddenn;" form='form<%= r.cartId %>'>
+                                <button type="submit" class="btn-danger" form='form<%= r.cartId %>'>Remove</button>
+                            </form>
+                        </div>
                     </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
-                <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="/img/noname.png">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="/img/noname.png">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
-                <tr>
-            <td>
-                <div class="cart-info">
-                    <img src="..">
-                    <div>
-                        <p>Item # 1 Name</p>
-                        <small>Price: $0.00</small>
-                        <br>
-                        <a href="">Remove</a>
-                    </div>
-                </div>
-            </td>
-            <td><input type="number" value="1"></td>
-            <td>$20.00</td>
-        </tr>
+                </td>
+                <td><input type="number" name="name<%= num %>" value="<%= r.units %>" min="1" max="<%= r.unitsleft %>" form="main-form"></td>
+                <td> $<%= r.price * r.units %> </td>
+            </tr>
+            
+            <% num++ %>
+        
+        <% });%>
     </table>
+    
+        <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;' form="main-form">
+        
+        <button type="submit" class=" btn btn-outline-warning" form="main-form">update cart</button>
+    
+    <br/>
+    
+    <form action="/checkout" method="GET">
+        <button type="submit" class=" btn btn-outline-success">Checkout</button>
+    </form>
+    
 </div> 
+
+<%- include ('templates/footer'); -%>
