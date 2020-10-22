@@ -2,11 +2,10 @@
 
 <%- include ('templates/notauthnav'); -%>
 
-<div class='container'>
-	<div class='jumbotron'>
+<div class='container text-center'>
+	<br>
 		<h3> User Login </h3>
-		<a class='btn btn-primary' href='/'>Home</a>
-	</div>
+		
 	
     <%if(typeof error != 'undefined' && error){%>
         <h6 style='color: red;'> Incorrect login credentials! </h6>
@@ -14,25 +13,29 @@
 	
 	<form action='/login' method='POST'>
 
-		<div class='form-group row'>
-			<label for='username' class='col-sm-4 col-form-label'>Username</label>
-			<div class='col-sm-4'>
-				<input type='text' class='form-control' id='username' name='username' placeholder='username' required>
+       <div class='form-group row'>
+          <div class='col-sm-2'></div>
+          <label for='username' class='col-sm-2 col-form-label'>User-Name</label>
+       <div class='col-sm-4'>
+          <input type='text' class='form-control' id='username' name='username' placeholder='User-Name' required>
+         </div>
+       </div>
+		
+			<div class='form-group row'>
+			    <div class='col-sm-2'></div>
+				<label for='password' class='col-sm-2 col-form-label'>Password</label>
+				<div class='col-sm-4'>
+					<input type='password' class='form-control' id='password' name='password' placeholder='****' required>
+				</div>
 			</div>
-		</div>
-		<div class='form-group row'>
-			<label for='password' class='col-sm-4 col-form-label'>Password</label>
-			<div class='col-sm-4'>
-				<input type='password' class='form-control' id='password' name='password' placeholder='****' required>
-			</div>
-		</div>
-		<div class='form-group row'>
-			<div class='col-sm-4'></div>
-			<div class='col-sm-4'>
-				<button class='btn btn-primary btn-block'>Login</button>
-			</div>
-			<div class='col-sm-4'></div>
-		</div>
+		
+				<div class='form-group row'>
+					<div class='col-sm-4'></div>
+					<div class='col-sm-4'>
+						<button class='btn btn-primary btn-block'>Login</button>
+					</div>
+					<div class='col-sm-4'></div>
+				</div>
 	</form>
 </div>
 
