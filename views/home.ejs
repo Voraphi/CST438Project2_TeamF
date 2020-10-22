@@ -14,7 +14,7 @@
 		
 		<% results.forEach(function(t) { %> 
               <div class="img-thumbnail flex-item">
-                <img  src='<%=t.itemlink%>'  >
+                <a href='/item/<%= t.itemId %>'> <img  src='<%=t.itemlink%>'  > </a>
                 <h4>Seller: <%=t.lastname%>, <%=t.firstname%></h4>
                 <h4><%=t.itemName%></h4>
                 <h4>Description: <%=t.description%></h4>

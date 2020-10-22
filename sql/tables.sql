@@ -61,7 +61,7 @@ INSERT INTO `items` (`itemId`, `sellerId`, `itemlink`, `itemname`, `color`, `cat
 DROP TABLE IF EXISTS `orderhistory`;
 
 CREATE TABLE `orderhistory` (
-	`orederId` mediumint(9) NOT NULL,
+	`orderId` mediumint(9) NOT NULL,
 	`userId` mediumint(9) NOT NULL,
 	`itemId` mediumint(9) NOT NULL,
   `itemlink` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
@@ -71,14 +71,14 @@ CREATE TABLE `orderhistory` (
   `unitspurchased` mediumint(9) COLLATE utf8_unicode_ci NOT NULL,
   `price` float(6,2) NOT NULL,
   `description` varchar(2000) COLLATE utf8_unicode_ci NOT NULL,
-  `datapurchased` DATE NOT NULL
+  `datepurchased` varchar(50) COLLATE utf8_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 ALTER TABLE `orderhistory`
-  ADD PRIMARY KEY (`orederId`);
+  ADD PRIMARY KEY (`orderId`);
 
 ALTER TABLE `orderhistory`
-  MODIFY `orederId` mediumint(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
+  MODIFY `orderId` mediumint(9) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1;
 
 
 

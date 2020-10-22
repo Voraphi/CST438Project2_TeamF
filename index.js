@@ -111,13 +111,22 @@ app.post('/login', async function(req, res){
 
 /* Register Routes */
 app.get('/register', function(req, res){
-    res.render('register');
+    res.render('register', {usernameTaken : false});
 });
 
-app.post('/register', function(req, res){
-    let salt = 10;
-    console.log(req.body.password,req.body.username);
-    bcrypt.hash(req.body.password, salt, function(error, hash){
+app.post('/register', async function(req, res){
+    
+    let user_stmt = 'select * from users where username = ?';
+    let user_data = [req.body.username];
+    
+    let user = await query(user_stmt, user_data);
+    
+    if(user.length != 0) {
+        res.render('register', {usernameTaken : true});
+    } else {
+        let salt = 10;
+        console.log(req.body.password,req.body.username);
+        bcrypt.hash(req.body.password, salt, function(error, hash){
         if(error) throw error;
         let stmt = 'INSERT INTO users (username, password, firstname, lastname) VALUES (?, ?, ?, ?)';
         let data = [req.body.username, hash, req.body.firstname, req.body.lastname];
@@ -126,6 +135,11 @@ app.post('/register', function(req, res){
            res.redirect('/login');
         });
     });
+    }
+    
+    
+    
+    
 });
 
 app.get('/additem',isAuthenticated, function(req, res){
@@ -162,7 +176,7 @@ app.get('/item/:itemId', async function(req, res) {
     
     // res.render("/item", );
     
-})
+});
 
 /* cart Routes */
 app.get('/cart', isAuthenticated, async function(req, res){
@@ -228,6 +242,8 @@ app.post('/updatecart', async function(req, res) {
     
     // console.log(req.body.leng);
     
+    console.log(r.length);
+    
     for(var i = 0; i < req.body.leng; i++) {
         
         // console.log(req.body["name" + i],  " : ", r[i].itemId);
@@ -241,7 +257,9 @@ app.post('/updatecart', async function(req, res) {
         
         let up_query = await query(up_stmt, up_data);
         
-        console.log(up_query, "from : ", r[i].units);
+        // console.log(up_query, "from : ", r[i].units);
+        
+        
         
     }
     
@@ -284,13 +302,21 @@ app.post('/removefromcart', async function(req, res) {
     
     let stmt = 'delete from cart where cartId = ?';
     
+    // let s = 'select * from cart';
+    
+    // let se = await query(s, []);
+    
+    // console.log(se);
+    
     let data = [req.body.cartId];
     
-    console.log(data);
+    console.log(req.query);
+    
+    console.log(data[0], "ofdiewnifw");
     
     let q = await query(stmt, data);
     
-    console.log(q);
+    // console.log(q);
     
     res.redirect("/cart");
     
@@ -300,8 +326,8 @@ app.post('/removefromcart', async function(req, res) {
 /* Checkout Routes */
 app.get('/checkout', isAuthenticated, function(req, res){
     
-      let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
-    let cart_data = [req.session.sellerId]
+    let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
+    let cart_data = [req.session.sellerId];
     
     connection.query(cart_stmt, cart_data, function(error, results) {
         if (error) throw error;
@@ -320,21 +346,78 @@ app.get('/welcome', isAuthenticated, function(req, res){
    res.render('welcome', {user: req.session.user}); 
 });
 
-app.get('/receipt', isAuthenticated, function(req, res){
-   res.render('receipt', {user: req.session.user}); 
+app.post('/receipt', async function(req, res){
+    
+    let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
+    let cart_data = [req.session.sellerId];
+    
+    let user_items = await query(cart_stmt, cart_data);
+    
+    
+    let up_stmt = 'update items set unitsleft = unitsleft - ? where itemId = ?';
+    
+    let oh_stmt = 'insert into orderhistory (userId, itemId, itemlink, itemname, color, category, unitspurchased, price, description, datepurchased) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'; 
+    
+    // let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    
+    let de_stmt = 'delete from cart where cartId = ?';
+    
+    let date_now = Date();
+    
+    var date = date_now.toString().substr(0, 24);
+    
+    for(var i = 0; i < user_items.length; i++) {
+        
+        let up_data = [user_items[i].units, user_items[i].itemId];
+        
+        let oh_data = [req.session.sellerId, user_items[i].itemId, user_items[i].itemlink, user_items[i].itemname, user_items[i].color, user_items[i].category, user_items[i].units, user_items[i].price, user_items[i].description, date];
+        
+        let de_data = [user_items[i].cartId];
+        
+        console.log(user_items[i].unitsleft);
+        
+        await query(up_stmt, up_data);
+        
+        await query(oh_stmt, oh_data);
+        
+        await query(de_stmt, de_data);
+        
+    }
+    
+   res.redirect('/orderhistory');
 });
 
-app.get('/orederhistory', isAuthenticated, function(req, res){
+app.get('/orderhistory', isAuthenticated, async function(req, res){
     
     
-    //select distinct date from orderhistory where userId = req.session.sellerId
+    let date_stmt = 'select distinct datepurchased from orderhistory where userId = ?';
     
-    //select * from orderhistory where userId = req.session.sellerId
+    let oh_stmt = 'select * from orderhistory where userId = ?';
+    
+    let data = [req.session.sellerId];
+    
+    let dates = await query(date_stmt, data);
+    
+    let history = await query(oh_stmt, data);
+    
+    
+    console.log(dates);
+    
+    console.log(history);
+    
+    
+    res.render('orderhistory', { dates : dates, history : history });
     
     //render
     
+    // var date = Date();
     
-   res.render('orederhistory', {user: req.session.user}); 
+    // console.log(date.toString().substr(0, 23));
+    // console.log(date.toString().substr(0, 24));
+    // console.log(date.toString().substr(0, 26));
+    
+    
+//   res.render('orderhistory', {user: req.session.user}); 
 });
 
 app.get('/searchkeywords', isAuthenticated, function(req, res) {

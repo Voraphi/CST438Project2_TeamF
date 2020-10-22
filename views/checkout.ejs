@@ -6,7 +6,7 @@
 <div class="row">
   <div class="col-75">
     <div class="container">
-      <form action="/receipt">
+      <form action="/receipt" method="POST">
 
         <div class="row">
           <div class="col-50">
@@ -58,7 +58,7 @@
         <label>
           <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
         </label><br>
-        <input type="submit" value="Checkout and View Receipt" class="btn">
+        <input type="submit" value="Checkout and View Receipt" class="btn btn-warning">
       </form>
     </div>
   </div>
@@ -76,7 +76,7 @@
       
       <% results.forEach(function(r) {  %>
       
-        <p><a href="#"><%= r.itemname %></a> <span class="price">$<%= r.price * r.units %></span></p>
+        <p><a href="/item/<%= r.itemId %>"><%= r.itemname %></a> <span class="price">$<%= r.price * r.units %></span></p>
       
         <% total += (r.price * r.units) %>
       <% });%>

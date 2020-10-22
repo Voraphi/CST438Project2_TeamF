@@ -26,6 +26,9 @@
 	        			</div>
 	        		</div>
         		
+	        		    <% if(usernameTaken) { %> 
+	        		    	<p style="color:red;font-size:0.9em;"> Username Already In Use </p>				
+	        		    <% } %>
 	        		    <div class='form-group row'>
 	        		    <div class='col-sm-2'></div>
 	        			<label for='username' class='col-sm-2 col-form-label'>User-Name</label>

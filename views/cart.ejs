@@ -5,7 +5,7 @@
 <!-- Cart items -->
 
 <div class="small-container cart-page">
-    <form action='/updatecart' method='POST'>
+    <form id="main-form" action='/updatecart' method='POST'/>
     
     <table>
         <tr>
@@ -23,75 +23,36 @@
                     <div class="cart-info">
                         <img src='<%= r.itemlink %>'>
                         <div>
-                            <p><%= r.itemName %></p>
+                            <p><%= r.itemname %></p>
                             <small>Price: $<%= r.price %></small>
                             <br>
                             
-                            <form action='/removefromcart' method='POST'>
-                                <input type='number' class='form-control' name='cartId' value='<%= r.cartId %>' style="visibility: hidden;">
-                                <button type="submit" class="btn-danger">Remove</button>
+                            <form id='form<%= r.cartId %>' action='/removefromcart' method='POST'>
+                                <input type='number' class='form-control' name='cartId' value='<%= r.cartId %>' style="visibility: hiddenn;" form='form<%= r.cartId %>'>
+                                <button type="submit" class="btn-danger" form='form<%= r.cartId %>'>Remove</button>
                             </form>
                         </div>
                     </div>
                 </td>
-                <td><input type="number" name="name<%= num %>" value="<%= r.units %>" min="1" max="<%= r.unitsleft %>"></td>
+                <td><input type="number" name="name<%= num %>" value="<%= r.units %>" min="1" max="<%= r.unitsleft %>" form="main-form"></td>
                 <td> $<%= r.price * r.units %> </td>
             </tr>
             
             <% num++ %>
         
         <% });%>
-        <!--<tr>-->
-        <!--    <td>-->
-        <!--        <div class="cart-info">-->
-        <!--            <img src="/img/noname.png">-->
-        <!--            <div>-->
-        <!--                <p>Item # 1 Name</p>-->
-        <!--                <small>Price: $0.00</small>-->
-        <!--                <br>-->
-        <!--                <a href="">Remove</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </td>-->
-        <!--    <td><input type="number" value="1"></td>-->
-        <!--    <td>$20.00</td>-->
-        <!--</tr>-->
-        <!--        <tr>-->
-        <!--    <td>-->
-        <!--        <div class="cart-info">-->
-        <!--            <img src="/img/noname.png">-->
-        <!--            <div>-->
-        <!--                <p>Item # 1 Name</p>-->
-        <!--                <small>Price: $0.00</small>-->
-        <!--                <br>-->
-        <!--                <a href="/img/noname.png">Remove</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </td>-->
-        <!--    <td><input type="number" value="1"></td>-->
-        <!--    <td>$20.00</td>-->
-        <!--</tr>-->
-        <!--        <tr>-->
-        <!--    <td>-->
-        <!--        <div class="cart-info">-->
-        <!--            <img src="..">-->
-        <!--            <div>-->
-        <!--                <p>Item # 1 Name</p>-->
-        <!--                <small>Price: $0.00</small>-->
-        <!--                <br>-->
-        <!--                <a href="">Remove</a>-->
-        <!--            </div>-->
-        <!--        </div>-->
-        <!--    </td>-->
-        <!--    <td><input type="number" value="1"></td>-->
-        <!--    <td>$20.00</td>-->
-        <!--</tr>-->
     </table>
     
-        <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;'>
+        <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;' form="main-form">
         
-        <button type="submit" class=" btn btn-outline-warning">update cart</button>
+        <button type="submit" class=" btn btn-outline-warning" form="main-form">update cart</button>
+    
+    <br/>
+    
+    <form action="/checkout" method="GET">
+        <button type="submit" class=" btn btn-outline-success">Checkout</button>
     </form>
+    
 </div> 
 
 <%- include ('templates/footer'); -%>
