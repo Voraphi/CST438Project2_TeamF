@@ -18,21 +18,21 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 
-// const connection = mysql.createConnection({
-//     host: process.env.HOST,
-//     user: process.env.USERNAME,
-//     password: process.env.PASSWORD,
-//     database: process.env.DATABASE
-// });
-// connection.connect();
-
 const connection = mysql.createConnection({
-    host: 'localhost',
-    user: 'admin',
-    password: 'admin',
-    database: 'webstoredb'
+    host: process.env.HOST,
+    user: process.env.USERNAME,
+    password: process.env.PASSWORD,
+    database: process.env.DATABASE
 });
 connection.connect();
+
+// const connection = mysql.createConnection({
+//     host: 'localhost',
+//     user: 'admin',
+//     password: 'admin',
+//     database: 'webstoredb'
+// });
+// connection.connect();
 
 
 /* Middleware */
@@ -130,6 +130,7 @@ app.get('/register', function(req, res){
     res.render('register', {usernameTaken : false});
 });
 
+
 app.post('/register', async function(req, res){
     
     let user_stmt = 'select * from users where username = ?';
@@ -201,7 +202,24 @@ app.get('/item/:itemId', async function(req, res) {
     res.render('item',  { results: q, userauth: req.session.authenticated, cart_items : cart_items } );
     
 });
-
+app.get('/additem',isAuthenticated, function(req, res){
+    res.render('additem');
+});
+app.post('/additem', function(req, res){
+    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, desc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    console.log(req.body.price);
+    console.log(req.body.itemlink);
+    console.log(req.body.itemname);
+    console.log(req.body.color);
+    console.log(req.body.category);
+    console.log(req.body.unitsleft);
+    console.log(req.body.desc);
+    let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
+    connection.query(stmt, data, function(error, result){
+       if(error) throw error;
+       res.redirect('/additem');
+    });
+});
 /* cart Routes */
 app.get('/cart', isAuthenticated, async function(req, res){
     
@@ -303,6 +321,7 @@ app.get('/logout', function(req, res){
    req.session.destroy();
    res.redirect('/');
 });
+
 
 app.post('/addtocart', function(req, res) {
    
