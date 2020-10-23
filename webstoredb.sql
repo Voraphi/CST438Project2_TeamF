@@ -55,7 +55,7 @@ CREATE TABLE `items` (
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `unitsleft` mediumint(9) NOT NULL,
   `price` float(6,2) NOT NULL,
-  `desc` varchar(2000) COLLATE utf8_unicode_ci NOT NULL,
+  `description` varchar(2000) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`itemId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -87,6 +87,7 @@ CREATE TABLE `orderhistory` (
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `unitspurchased` mediumint(9) NOT NULL,
   `price` float(6,2) NOT NULL,
+  `description` varchar(2000) COLLATE utf8_unicode_ci NOT NULL,
   `datapurchased` date NOT NULL,
   PRIMARY KEY (`orederId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
@@ -115,7 +116,7 @@ CREATE TABLE `users` (
   `firstname` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   `lastname` varchar(40) COLLATE utf8_unicode_ci NOT NULL,
   PRIMARY KEY (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -124,7 +125,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
-INSERT INTO `users` VALUES (1,'voraphi','catsRgood','Jesus','Caballero'),(2,'username','password','FirstName','LastName'),(3,'phi','something','Not Jesus','idk'),(4,'phi','$2b$10$IyWy5bCH6AETqZhYiXGNhebi4nEwNR/iW5wy7SzuM79gjKROA3J/C','phi','phi'),(5,'phiphi','$2b$10$T8ZXyunSX2ZQ1jqOl4NJjOko5dheXYWvKSqhAaaiBhJxlLd.jj50W','first','last');
+INSERT INTO `users` VALUES (1,'voraphi','catsRgood','Jesus','Caballero'),(2,'username','password','FirstName','LastName'),(3,'phi','something','Not Jesus','idk');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -137,4 +138,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-10-08  3:32:52
+-- Dump completed on 2020-10-11  3:18:23
