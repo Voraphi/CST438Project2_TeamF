@@ -1,28 +1,29 @@
 <%- include ('templates/header'); -%>
 
-<%- include ('templates/keywordsearchnav'); -%>
+<% if(userauth) { %>
+  <%- include ('templates/authnav'); -%>
+<% } else { %>
+  <%- include ('templates/notauthnav'); -%>
+<% } %>
 
 <!--<div class='container'>-->
 	<div class='jumbotron'>
 		<!--<a class='btn btn-primary' href='/login'>Login</a>-->
 		<!--<a class='btn btn-info' href='/register'>Register</a>-->
 		
-		<% if(typeof results == 'undefined') { %>
-		
-		  <h3> Try Searching for something! </h3>
-		
-		<% } else { %>
-		
-  		<% results.forEach(function(t) { %> 
-                <div class="img-thumbnail flex-item">
-                  <a href='/item/<%= t.itemId %>'> <img  src='<%=t.itemlink%>'  > </a>
-                  <h4>Seller: <%=t.lastname%>, <%=t.firstname%></h4>
-                  <h4><%=t.itemName%></h4>
-                  <h4>Cost: <%=t.price%></h4>
-                  <h5>Color: <%=t.color%></h5>
-                  <h5>Units Left: <%=t.unitsleft%></h5>
-                  
-                                    <% var found = false %>
+		<% results.forEach(function(t) { %> 
+              <div class="img-thumbnail flex-item">
+                <a href='/item/<%= t.itemId %>'> <img  src='<%=t.itemlink%>'  > </a>
+                <h4>Seller: <%=t.lastname%>, <%=t.firstname%></h4>
+                <h4><%=t.itemName%></h4>
+                <h4>Description: <%=t.description%></h4>
+                <h4>Cost: <%=t.price%></h4>
+                <h5>Category: <%=t.category%></h5>
+                <h5>Color: <%=t.color%></h5>
+                <h5>Units Left: <%=t.unitsleft%></h5>
+                
+                <% if(userauth) { %>
+                  <% var found = false %>
                   <% cart_items.forEach(function(c) {  %>
 
                       <% if(c.itemId == t.itemId) { %>
@@ -39,9 +40,13 @@
                         <button type="submit" class="btn btn-outline-success">Cart</button>
                       </form>
                     <% } %>
-
-      <% }); %>
-		<% } %>
+                  
+                <% } %>
+                
+              </div>
+            <% }) %>
+            
+		
 	</div>
 <!--</div>-->
 

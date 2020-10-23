@@ -73,15 +73,31 @@ function query(stmt, data) {
 
 
 /* Home Route*/
-app.get('/', function(req, res) {
+app.get('/', async function(req, res) {
     
     let stmt = 'SELECT * FROM items inner join users on userId = sellerId';
+    
+    let cart_items = [];
+    
+    if(req.session.authenticated) {
+        
+        let cart_stmt = 'select * from cart where userId = ?';
+        
+        let cart_data = [req.session.sellerId];
+        
+        
+        cart_items = await query(cart_stmt, cart_data);
+        
+        
+        
+    }
+    
     
     connection.query(stmt, function(error, results) {
         if (error) throw error;
         if (results.length) {
             // console.log(results)
-            res.render("home", { results: results, userauth: req.session.authenticated });
+            res.render("home", { results: results, userauth: req.session.authenticated, cart_items : cart_items });
         }
     });
     
@@ -164,17 +180,25 @@ app.post('/additem', function(req, res){
 
 app.get('/item/:itemId', async function(req, res) {
     
-    let stmt = 'select * from items where itemId = ?';
+    let stmt = 'select * from items inner join users on userId = sellerId where itemId = ?';
     
     let data = [req.params.itemId];
     
-    console.log(data);
+    // console.log(data);
     
     let q = await query(stmt, data);
     
-    console.log(q);
+    // console.log(q);
     
-    // res.render("/item", );
+    let cart_stmt = 'select * from cart where userId = ?';
+        
+    let cart_data = [req.session.sellerId];
+    
+    
+    let cart_items = await query(cart_stmt, cart_data);
+    
+    
+    res.render('item',  { results: q, userauth: req.session.authenticated, cart_items : cart_items } );
     
 });
 
@@ -422,7 +446,7 @@ app.get('/orderhistory', isAuthenticated, async function(req, res){
 
 app.get('/searchkeywords', isAuthenticated, function(req, res) {
     
-  res.render("searchkeywords");
+  res.render("searchkeywords", {cart_items : []});
   
 });
 
@@ -434,24 +458,31 @@ app.post("/searchkeywords", function(req, res) {
     
 });
 
-app.get('/searchkeywords/:words', isAuthenticated, function(req, res) {
+app.get('/searchkeywords/:words', isAuthenticated, async function(req, res) {
     
     // let stmt = 'select * from items where itemname LIKE `%?%` or color LIKE `%?%` or description LIKE `%?%`;
     
-    let stmt = 'select * from items where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
+    let stmt = 'select * from items inner join users on userId = sellerId where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
+    
+    let cart_stmt = 'select * from cart where userId = ?';
+        
+    let cart_data = [req.session.sellerId];
+    
+    
+    let cart_items = await query(cart_stmt, cart_data);
     
     // let data = [req.params.words, req.params.words, req.params.words];
     
     connection.query(stmt, function(error, result) {
        if (error) throw error;
-       res.render("searchkeywords", { results: result });
+       res.render("searchkeywords", { results: result, cart_items : cart_items });
     });
     
 });
 
 app.get('/searchcategory', isAuthenticated, function(req, res) {
     
-  res.render("searchcategory");
+  res.render("searchcategory", {cart_items : []});
   
 });
 
@@ -463,14 +494,22 @@ app.post('/searchcategory', function(req, res) {
 });
 
 
-app.get('/searchcategory/:category', isAuthenticated, function(req, res) {
+app.get('/searchcategory/:category', isAuthenticated, async function(req, res) {
     
-    let stmt = 'select * from items where category = ?';
+    let stmt = 'select * from items inner join users on userId = sellerId where category = ?';
     let data = [req.params.category];
+    
+    let cart_stmt = 'select * from cart where userId = ?';
+    
+    let cart_data = [req.session.sellerId];
+    
+    
+    let cart_items = await query(cart_stmt, cart_data);
+    
     
     connection.query(stmt, data, function(error, result) {
        if (error) throw error;
-       res.render("searchcategory", { results: result });
+       res.render("searchcategory", { results: result, cart_items : cart_items });
     });
     
 });
