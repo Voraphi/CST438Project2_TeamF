@@ -1,9 +1,65 @@
 <%- include ('templates/header'); -%>
 
+<%- include ('templates/authnav'); -%>
 
 <h1> Order History Page </h1>
 
 <!-- for loop by length of disinct dates -->
+
+    <% dates.forEach(function(d) { %>
+    
+        <h2> <%= d.datepurchased %> </h2>
+    
+        <% var total = 0 %>
+        <div class="small-container cart-page">    
+            <table>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Subtotal</th>
+                </tr>
+        
+                <% history.forEach(function(h) {  %>
+                    
+                    <% if(d.datepurchased == h.datepurchased) { %>
+                        
+                        <tr>
+                            
+                            <td>
+                                
+                                 <div class="cart-info">
+                                    <img  src='<%=h.itemlink%>' >
+                                    <div>
+                                        <p> <%= h.itemname %> </p>
+                                        <small> <%= h.description %> </small>
+                                        <br>
+                                        
+                                    </div>
+                                </div>
+                                
+                            </td>
+                            
+                            <td> <%= h.price %> </td>
+                            
+                            <td> <%= h.unitspurchased %> </td>
+                            
+                            <td> <%= h.price * h.unitspurchased %> </td>
+                            
+                        </tr>
+                        
+                        <% total += h.price * h.unitspurchased %>
+                        
+                    <% } %>
+                <% }) %>
+            
+            </table>
+            <br/>
+            
+            <h4 style="text-align:right;"> Total: <%= total %> </h4>
+        </div>
+        
+    <% }) %>
 
 
 <!-- for each date loop through the whole array find the date that mathces -->

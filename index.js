@@ -18,21 +18,21 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 
-const connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
-});
-connection.connect();
-
 // const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'admin',
-//     password: 'admin',
-//     database: 'webstoredb'
+//     host: process.env.HOST,
+//     user: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//     database: process.env.DATABASE
 // });
 // connection.connect();
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'admin',
+    database: 'webstoredb'
+});
+connection.connect();
 
 
 /* Middleware */
@@ -73,15 +73,31 @@ function query(stmt, data) {
 
 
 /* Home Route*/
-app.get('/', function(req, res) {
+app.get('/', async function(req, res) {
     
     let stmt = 'SELECT * FROM items inner join users on userId = sellerId';
+    
+    let cart_items = [];
+    
+    if(req.session.authenticated) {
+        
+        let cart_stmt = 'select * from cart where userId = ?';
+        
+        let cart_data = [req.session.sellerId];
+        
+        
+        cart_items = await query(cart_stmt, cart_data);
+        
+        
+        
+    }
+    
     
     connection.query(stmt, function(error, results) {
         if (error) throw error;
         if (results.length) {
             // console.log(results)
-            res.render("home", { results: results, userauth: req.session.authenticated });
+            res.render("home", { results: results, userauth: req.session.authenticated, cart_items : cart_items });
         }
     });
     
@@ -102,6 +118,7 @@ app.post('/login', async function(req, res){
         // console.log(isUserExist[0]);
         req.session.sellerId = isUserExist[0].userId;
         // console.log(req.session.sellerId);
+
         res.redirect('/welcome');
     }
     else{
@@ -113,7 +130,6 @@ app.post('/login', async function(req, res){
 app.get('/register', function(req, res){
     res.render('register', {usernameTaken : false});
 });
-
 
 app.post('/register', async function(req, res){
     
@@ -138,8 +154,60 @@ app.post('/register', async function(req, res){
     });
     }
     
+});
+
+app.get('/profile', isAuthenticated, async function(req, res) {
+    let stmt = 'select * from users where userId = ?';
+    let data = [req.session.sellerId];
+    
+    let q = await query(stmt, data);
+    
+    res.render('profile', { user : q } );
+    
+}); 
+
+
+app.get('/additem',isAuthenticated, function(req, res){
+    res.render('additem');
+});
+
+app.post('/additem', function(req, res){
+    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    // console.log(req.body.price);
+    // console.log(req.body.itemlink);
+    // console.log(req.body.itemname);
+    // console.log(req.body.color);
+    // console.log(req.body.category);
+    // console.log(req.body.unitsleft);
+    // console.log(req.body.desc);
+    let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
+    connection.query(stmt, data, function(error, result){
+       if(error) throw error;
+       res.redirect('/welcome');
+    });
+});
+
+app.get('/item/:itemId', async function(req, res) {
+    
+    let stmt = 'select * from items inner join users on userId = sellerId where itemId = ?';
+    
+    let data = [req.params.itemId];
+    
+    // console.log(data);
+    
+    let q = await query(stmt, data);
+    
+    // console.log(q);
+    
+    let cart_stmt = 'select * from cart where userId = ?';
+        
+    let cart_data = [req.session.sellerId];
     
     
+    let cart_items = await query(cart_stmt, cart_data);
+    
+    
+    res.render('item',  { results: q, userauth: req.session.authenticated, cart_items : cart_items } );
     
 });
 
@@ -162,6 +230,59 @@ app.post('/additem', function(req, res){
        res.redirect('/additem');
     });
 });
+app.get('/items', isAuthenticated, async function(req, res){
+    
+    
+    let stmt = 'SELECT * FROM items inner join users on userId = sellerId where sellerId=?';
+    let data = [req.session.sellerId];
+    
+    connection.query(stmt,data, function(error, results) {
+        if (error) throw error;
+            // console.log(results)
+            res.render("items", { results: results, userauth: req.session.authenticated });
+    });
+    
+    
+});
+app.get('/updateitem/:itemId',isAuthenticated, async function(req, res){
+  let stmt='select * from items where itemId=?';
+  let data=[req.params.itemId];
+  let q = await query(stmt, data);
+  
+  res.render("updateitem",{result:q});
+});
+
+app.post('/updateitem', function(req, res){
+    let stmt= ' update items set itemlink=?, itemname=?, color=?, category=?, unitsleft=?, price=?, description=? where itemId=?'
+    let data= [req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc, req.body.itemId];
+    connection.query(stmt, data, function(error, result){
+       if(error) throw error;
+       res.redirect('/items');
+    });
+});
+
+app.post('/removeitem', async function(req, res) {
+    
+    let stmt = 'delete from items where itemId = ?';
+    
+    let data = [req.body.itemId];
+    
+    console.log(data);
+    let del='select * from cart where itemId=? ';
+    let carts= await query(del,data);
+    let q = await query(stmt, data);
+    for(var i=0; carts.length>i;i++){
+        let cart='delete from cart where itemId=?';
+        let sdata=[q[i].itemId];
+        
+      await query(cart, sdata);
+    }    
+    console.log(q);
+    
+    res.redirect("/items");
+    
+});
+
 
 app.get('/item/:itemId', async function(req, res) {
     
@@ -177,25 +298,8 @@ app.get('/item/:itemId', async function(req, res) {
     
     // res.render("/item", );
     
-});
-app.get('/additem',isAuthenticated, function(req, res){
-    res.render('additem');
-});
-app.post('/additem', function(req, res){
-    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, desc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    console.log(req.body.price);
-    console.log(req.body.itemlink);
-    console.log(req.body.itemname);
-    console.log(req.body.color);
-    console.log(req.body.category);
-    console.log(req.body.unitsleft);
-    console.log(req.body.desc);
-    let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
-    connection.query(stmt, data, function(error, result){
-       if(error) throw error;
-       res.redirect('/additem');
-    });
-});
+})
+
 /* cart Routes */
 app.get('/cart', isAuthenticated, async function(req, res){
     
@@ -259,9 +363,9 @@ app.post('/updatecart', async function(req, res) {
     // console.log(r);
     
     // console.log(req.body.leng);
-    
+
     console.log(r.length);
-    
+
     for(var i = 0; i < req.body.leng; i++) {
         
         // console.log(req.body["name" + i],  " : ", r[i].itemId);
@@ -277,14 +381,13 @@ app.post('/updatecart', async function(req, res) {
         
         // console.log(up_query, "from : ", r[i].units);
         
-        
+
         
     }
     
     res.redirect('/cart');
     
 });
-
 app.post("/removeitem", function(req, res) {
    
    
@@ -344,7 +447,7 @@ app.post('/removefromcart', async function(req, res) {
 
 /* Checkout Routes */
 app.get('/checkout', isAuthenticated, function(req, res){
-    
+
     let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
     let cart_data = [req.session.sellerId];
     
@@ -406,6 +509,7 @@ app.post('/receipt', async function(req, res){
    res.redirect('/orderhistory');
 });
 
+
 app.get('/orderhistory', isAuthenticated, async function(req, res){
     
     
@@ -420,9 +524,9 @@ app.get('/orderhistory', isAuthenticated, async function(req, res){
     let history = await query(oh_stmt, data);
     
     
-    console.log(dates);
+    // console.log(dates);
     
-    console.log(history);
+    // console.log(history);
     
     
     res.render('orderhistory', { dates : dates, history : history });
@@ -441,7 +545,7 @@ app.get('/orderhistory', isAuthenticated, async function(req, res){
 
 app.get('/searchkeywords', isAuthenticated, function(req, res) {
     
-  res.render("searchkeywords");
+  res.render("searchkeywords", {cart_items : []});
   
 });
 
@@ -453,24 +557,31 @@ app.post("/searchkeywords", function(req, res) {
     
 });
 
-app.get('/searchkeywords/:words', isAuthenticated, function(req, res) {
+app.get('/searchkeywords/:words', isAuthenticated, async function(req, res) {
     
     // let stmt = 'select * from items where itemname LIKE `%?%` or color LIKE `%?%` or description LIKE `%?%`;
     
-    let stmt = 'select * from items where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
+    let stmt = 'select * from items inner join users on userId = sellerId where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
+    
+    let cart_stmt = 'select * from cart where userId = ?';
+        
+    let cart_data = [req.session.sellerId];
+    
+    
+    let cart_items = await query(cart_stmt, cart_data);
     
     // let data = [req.params.words, req.params.words, req.params.words];
     
     connection.query(stmt, function(error, result) {
        if (error) throw error;
-       res.render("searchkeywords", { results: result });
+       res.render("searchkeywords", { results: result, cart_items : cart_items });
     });
     
 });
 
 app.get('/searchcategory', isAuthenticated, function(req, res) {
     
-  res.render("searchcategory");
+  res.render("searchcategory", {cart_items : []});
   
 });
 
@@ -482,14 +593,22 @@ app.post('/searchcategory', function(req, res) {
 });
 
 
-app.get('/searchcategory/:category', isAuthenticated, function(req, res) {
+app.get('/searchcategory/:category', isAuthenticated, async function(req, res) {
     
-    let stmt = 'select * from items where category = ?';
+    let stmt = 'select * from items inner join users on userId = sellerId where category = ?';
     let data = [req.params.category];
+    
+    let cart_stmt = 'select * from cart where userId = ?';
+    
+    let cart_data = [req.session.sellerId];
+    
+    
+    let cart_items = await query(cart_stmt, cart_data);
+    
     
     connection.query(stmt, data, function(error, result) {
        if (error) throw error;
-       res.render("searchcategory", { results: result });
+       res.render("searchcategory", { results: result, cart_items : cart_items });
     });
     
 });

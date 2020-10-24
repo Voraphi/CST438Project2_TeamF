@@ -1,100 +1,59 @@
-<<<<<<< HEAD
-=======
 
-
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
 <%- include ('templates/header'); -%>
+
 <%- include ('templates/authnav'); -%>
-<br>
 
-<div class="row">
-  <div class="col-75">
-    <div class="container">
-      <form action="/receipt" method="POST">
+<!-- Cart items -->
 
-        <div class="row">
-          <div class="col-50">
-            <h3>User Information</h3>
-            <label for="name">Full Name</label>
-            <input type="text" id="name" name="Name" placeholder="Tyler Adams" required>
-            <label for="email">Email</label>
-            <input type="text" id="email" name="email" placeholder="tyleradams@gmail.com" required>
-            <label for="adr">Address</label>
-            <input type="text" id="adr" name="address" placeholder="100 Campus Center" required>
-            <label for="city">City</label>
-            <input type="text" id="city" name="city" placeholder="Seaside" required>
-
-            <div class="row">
-              <div class="col-50">
-                <label for="state">State</label>
-                <input type="text" id="state" name="state" placeholder="CA" required>
-              </div>
-              <div class="col-50">
-                <label for="zip">Zip</label>
-                <input type="text" id="zip" name="zip" placeholder="93955" required>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-50">
-            <h3>Payment</h3>
+<div class="small-container cart-page">
+    <form id="main-form" action='/updatecart' method='POST'/>
+    
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Subtotal</th>
+        </tr>
+        
+        <% var num = 0 %>
+        
+        <% results.forEach(function(r) { %>
+        
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src='<%= r.itemlink %>'>
+                        <div>
+                            <p><%= r.itemname %></p>
+                            <small>Price: $<%= r.price %></small>
+                            <br>
+                            
+                            <form id='form<%= r.cartId %>' action='/removefromcart' method='POST'>
+                                <input type='number' class='form-control' name='cartId' value='<%= r.cartId %>' style="visibility: hiddenn;" form='form<%= r.cartId %>'>
+                                <button type="submit" class="btn-danger" form='form<%= r.cartId %>'>Remove</button>
+                            </form>
+                        </div>
+                    </div>
+                </td>
+                <td><input type="number" name="name<%= num %>" value="<%= r.units %>" min="1" max="<%= r.unitsleft %>" form="main-form"></td>
+                <td> $<%= r.price * r.units %> </td>
+            </tr>
             
-            <label for="cname">Name on Card</label>
-            <input type="text" id="cname" name="cardname" placeholder="Tyler Adams" required>
-            <label for="ccnum">Credit card number</label>
-            <input type="text" id="ccnum" name="cardnumber" placeholder="1111-2222-3333-4444" required>
-            <label for="expmonth">Exp Month</label>
-            <input type="text" id="expmonth" name="expmonth" placeholder="January" required>
+            <% num++ %>
+        
+        <% });%>
+    </table>
+    
+        <input type="hidden" name="leng" value=<%= num %> style='visibilty: hidden;' form="main-form">
+        
+        <button type="submit" class=" btn btn-outline-warning" form="main-form">update cart</button>
+    
+    <br/>
+    
+    <form action="/checkout" method="GET">
+        <button type="submit" class=" btn btn-outline-success">Checkout</button>
+    </form>
+    
+</div> 
 
-            <div class="row">
-              <div class="col-50">
-                <label for="expyear">Exp Year</label>
-                <input type="text" id="expyear" name="expyear" placeholder="2020" required>
-              </div>
-              <div class="col-50">
-                <label for="cvv">CVV</label>
-                <input type="text" id="cvv" name="cvv" placeholder="444" required>
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <label>
-          <input type="checkbox" checked="checked" name="sameadr"> Shipping address same as billing
-        </label><br>
-        <input type="submit" value="Checkout and View Receipt" class="btn btn-warning">
-      </form>
-    </div>
-  </div>
-
-  <div class="col-25">
-    <div class="container">
-      <h4>Cart
-        <span class="price" style="color:black">
-          <i class="fa fa-shopping-cart"></i>
-          <b>4</b>
-        </span>
-      </h4>
-      
-      <% var total = 0 %>
-      
-      <% results.forEach(function(r) {  %>
-      
-        <p><a href="/item/<%= r.itemId %>"><%= r.itemname %></a> <span class="price">$<%= r.price * r.units %></span></p>
-      
-        <% total += (r.price * r.units) %>
-      <% });%>
-      
-      <!--<p><a href="#">Item 2</a> <span class="price">$0.00</span></p>-->
-      <!--<p><a href="#">Item 3</a> <span class="price">$0.00</span></p>-->
-      <!--<p><a href="#">Item 4</a> <span class="price">$0.00</span></p>-->
-      <hr>
-      <p>Total <span class="price" style="color:black"><b>$<%= total %></b></span></p>
-    </div>
-  </div>
-</div>
 <%- include ('templates/footer'); -%>
-<<<<<<< HEAD
->>>>>>> cart
-=======
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
