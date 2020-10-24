@@ -114,12 +114,6 @@ app.get('/register', function(req, res){
     res.render('register', {usernameTaken : false});
 });
 
-<<<<<<< HEAD
-app.post('/register', function(req, res){
-    let salt = 10;
-    console.log(req.body.password,req.body.username);
-    bcrypt.hash(req.body.password, salt, function(error, hash){
-=======
 
 app.post('/register', async function(req, res){
     
@@ -134,7 +128,6 @@ app.post('/register', async function(req, res){
         let salt = 10;
         console.log(req.body.password,req.body.username);
         bcrypt.hash(req.body.password, salt, function(error, hash){
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
         if(error) throw error;
         let stmt = 'INSERT INTO users (username, password, firstname, lastname) VALUES (?, ?, ?, ?)';
         let data = [req.body.username, hash, req.body.firstname, req.body.lastname];
@@ -205,29 +198,39 @@ app.post('/additem', function(req, res){
        res.redirect('/additem');
     });
 });
-app.get('/removeitem', isAuthenticated, async function(req, res){
+app.get('/items', isAuthenticated, async function(req, res){
     
     
-    let stmt = 'SELECT * FROM items inner join users on userId = sellerId';
+    let stmt = 'SELECT * FROM items inner join users on userId = sellerId where sellerId=?';
+    let data = [req.session.sellerId];
     
-    connection.query(stmt, function(error, results) {
+    connection.query(stmt,data, function(error, results) {
         if (error) throw error;
         if (results.length) {
             // console.log(results)
-            res.render("removeitem", { results: results, userauth: req.session.authenticated });
+            res.render("items", { results: results, userauth: req.session.authenticated });
         }
     });
     
-});
-app.post('/updateitem', function(req, res){
     
-    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
+});
+app.get('/updateitem/:itemId',isAuthenticated, async function(req, res){
+  let stmt='select * from items where itemId=?';
+  let data=[req.params.itemId];
+  let q = await query(stmt, data);
+  
+  res.render("updateitem",{result:q});
+});
+
+app.post('/updateitem', function(req, res){
+    let stmt= ' update items set itemlink=?, itemname=?, color=?, category=?, unitsleft=?, price=?, description=? where itemId=?'
+    let data= [req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc, req.body.itemId];
     connection.query(stmt, data, function(error, result){
        if(error) throw error;
-       res.redirect('/removeitem');
+       res.redirect('/items');
     });
 });
+
 app.post('/removeitem', async function(req, res) {
     
     let stmt = 'delete from items where itemId = ?';
@@ -246,12 +249,8 @@ app.post('/removeitem', async function(req, res) {
     }    
     console.log(q);
     
-    res.redirect("/removeitem");
+    res.redirect("/items");
     
-});
-
-app.get('/updateitem',isAuthenticated, function(req, res){
-    res.render('updateitem');
 });
 
 
@@ -334,12 +333,9 @@ app.post('/updatecart', async function(req, res) {
     // console.log(r);
     
     // console.log(req.body.leng);
-    
-<<<<<<< HEAD
-=======
+
     console.log(r.length);
-    
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
+
     for(var i = 0; i < req.body.leng; i++) {
         
         // console.log(req.body["name" + i],  " : ", r[i].itemId);
@@ -353,29 +349,21 @@ app.post('/updatecart', async function(req, res) {
         
         let up_query = await query(up_stmt, up_data);
         
-<<<<<<< HEAD
-        console.log(up_query, "from : ", r[i].units);
-=======
         // console.log(up_query, "from : ", r[i].units);
         
-        
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
+
         
     }
     
     res.redirect('/cart');
     
 });
-
-<<<<<<< HEAD
-=======
 app.post("/removeitem", function(req, res) {
    
    
     
 });
 
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
 
 /* Logout Route */
 app.get('/logout', function(req, res){
@@ -383,10 +371,7 @@ app.get('/logout', function(req, res){
    res.redirect('/');
 });
 
-<<<<<<< HEAD
-=======
 
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
 app.post('/addtocart', function(req, res) {
    
    let stmt = 'insert into cart (itemId, userId, units) VALUES (?, ?, ?)';
@@ -409,19 +394,6 @@ app.post('/removefromcart', async function(req, res) {
     
     let stmt = 'delete from cart where cartId = ?';
     
-<<<<<<< HEAD
-    let data = [req.body.cartId];
-    
-    console.log(data);
-    
-    let q = await query(stmt, data);
-    
-    console.log(q);
-    
-    res.redirect("/cart");
-    
-});
-=======
     // let s = 'select * from cart';
     
     // let se = await query(s, []);
@@ -441,19 +413,13 @@ app.post('/removefromcart', async function(req, res) {
     res.redirect("/cart");
     
 })
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
 
 
 /* Checkout Routes */
 app.get('/checkout', isAuthenticated, function(req, res){
-    
-<<<<<<< HEAD
-      let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
-    let cart_data = [req.session.sellerId]
-=======
+
     let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
     let cart_data = [req.session.sellerId];
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
     
     connection.query(cart_stmt, cart_data, function(error, results) {
         if (error) throw error;
@@ -513,56 +479,7 @@ app.post('/receipt', async function(req, res){
    res.redirect('/orderhistory');
 });
 
-<<<<<<< HEAD
-app.get('/orederhistory', isAuthenticated, function(req, res){
-    
-    
-    //select distinct date from orderhistory where userId = req.session.sellerId
-    
-    //select * from orderhistory where userId = req.session.sellerId
-    
-    //render
-    
-    
-   res.render('orederhistory', {user: req.session.user}); 
-});
 
-app.get('/searchkeywords', isAuthenticated, function(req, res) {
-    
-  res.render("searchkeywords");
-  
-});
-
-app.post("/searchkeywords", function(req, res) {
-    
-    let words = req.body.words;
-    
-    res.redirect("searchkeywords/" + words);
-    
-});
-
-app.get('/searchkeywords/:words', isAuthenticated, function(req, res) {
-    
-    // let stmt = 'select * from items where itemname LIKE `%?%` or color LIKE `%?%` or description LIKE `%?%`;
-    
-    let stmt = 'select * from items where itemname LIKE \'%' + req.params.words + '%\' or color LIKE \'%' + req.params.words + '%\' or description LIKE \'%' + req.params.words + '%\'';
-    
-    // let data = [req.params.words, req.params.words, req.params.words];
-    
-    connection.query(stmt, function(error, result) {
-       if (error) throw error;
-       res.render("searchkeywords", { results: result });
-    });
-    
-});
-
-app.get('/searchcategory', isAuthenticated, function(req, res) {
-    
-  res.render("searchcategory");
-  
-});
-
-=======
 app.get('/orderhistory', isAuthenticated, async function(req, res){
     
     
@@ -631,7 +548,6 @@ app.get('/searchcategory', isAuthenticated, function(req, res) {
   
 });
 
->>>>>>> ae43e2da530a137c7fbf92ab97bc18944385c546
 app.post('/searchcategory', function(req, res) {
     let category = req.body.category;
     
