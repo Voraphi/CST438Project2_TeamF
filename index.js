@@ -102,6 +102,7 @@ app.post('/login', async function(req, res){
         // console.log(isUserExist[0]);
         req.session.sellerId = isUserExist[0].userId;
         // console.log(req.session.sellerId);
+
         res.redirect('/welcome');
     }
     else{
@@ -113,7 +114,6 @@ app.post('/login', async function(req, res){
 app.get('/register', function(req, res){
     res.render('register', {usernameTaken : false});
 });
-
 
 app.post('/register', async function(req, res){
     
