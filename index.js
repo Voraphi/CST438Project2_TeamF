@@ -118,6 +118,7 @@ app.post('/login', async function(req, res){
         // console.log(isUserExist[0]);
         req.session.sellerId = isUserExist[0].userId;
         // console.log(req.session.sellerId);
+
         res.redirect('/welcome');
     }
     else{
@@ -129,7 +130,6 @@ app.post('/login', async function(req, res){
 app.get('/register', function(req, res){
     res.render('register', {usernameTaken : false});
 });
-
 
 app.post('/register', async function(req, res){
     
@@ -202,24 +202,98 @@ app.get('/item/:itemId', async function(req, res) {
     res.render('item',  { results: q, userauth: req.session.authenticated, cart_items : cart_items } );
     
 });
+
 app.get('/additem',isAuthenticated, function(req, res){
     res.render('additem');
 });
+
 app.post('/additem', function(req, res){
-    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, desc) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-    console.log(req.body.price);
-    console.log(req.body.itemlink);
-    console.log(req.body.itemname);
-    console.log(req.body.color);
-    console.log(req.body.category);
-    console.log(req.body.unitsleft);
-    console.log(req.body.desc);
+    let stmt = 'INSERT INTO items (sellerId, itemlink, itemname, color, category, unitsleft, price, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
+    // console.log(req.body.price);
+    // console.log(req.body.itemlink);
+    // console.log(req.body.itemname);
+    // console.log(req.body.color);
+    // console.log(req.body.category);
+    // console.log(req.body.unitsleft);
+    // console.log(req.body.desc);
     let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
     connection.query(stmt, data, function(error, result){
        if(error) throw error;
        res.redirect('/additem');
     });
 });
+app.get('/items', isAuthenticated, async function(req, res){
+    
+    
+    let stmt = 'SELECT * FROM items inner join users on userId = sellerId where sellerId=?';
+    let data = [req.session.sellerId];
+    
+    connection.query(stmt,data, function(error, results) {
+        if (error) throw error;
+        if (results.length) {
+            // console.log(results)
+            res.render("items", { results: results, userauth: req.session.authenticated });
+        }
+    });
+    
+    
+});
+app.get('/updateitem/:itemId',isAuthenticated, async function(req, res){
+  let stmt='select * from items where itemId=?';
+  let data=[req.params.itemId];
+  let q = await query(stmt, data);
+  
+  res.render("updateitem",{result:q});
+});
+
+app.post('/updateitem', function(req, res){
+    let stmt= ' update items set itemlink=?, itemname=?, color=?, category=?, unitsleft=?, price=?, description=? where itemId=?'
+    let data= [req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc, req.body.itemId];
+    connection.query(stmt, data, function(error, result){
+       if(error) throw error;
+       res.redirect('/items');
+    });
+});
+
+app.post('/removeitem', async function(req, res) {
+    
+    let stmt = 'delete from items where itemId = ?';
+    
+    let data = [req.body.itemId];
+    
+    console.log(data);
+    let del='select * from cart where itemId=? ';
+    let carts= await query(del,data);
+    let q = await query(stmt, data);
+    for(var i=0; carts.length>i;i++){
+        let cart='delete from cart where itemId=?';
+        let sdata=[q[i].itemId];
+        
+      await query(cart, sdata);
+    }    
+    console.log(q);
+    
+    res.redirect("/items");
+    
+});
+
+
+app.get('/item/:itemId', async function(req, res) {
+    
+    let stmt = 'select * from items where itemId = ?';
+    
+    let data = [req.params.itemId];
+    
+    console.log(data);
+    
+    let q = await query(stmt, data);
+    
+    console.log(q);
+    
+    // res.render("/item", );
+    
+})
+
 /* cart Routes */
 app.get('/cart', isAuthenticated, async function(req, res){
     
@@ -283,9 +357,9 @@ app.post('/updatecart', async function(req, res) {
     // console.log(r);
     
     // console.log(req.body.leng);
-    
+
     console.log(r.length);
-    
+
     for(var i = 0; i < req.body.leng; i++) {
         
         // console.log(req.body["name" + i],  " : ", r[i].itemId);
@@ -301,14 +375,13 @@ app.post('/updatecart', async function(req, res) {
         
         // console.log(up_query, "from : ", r[i].units);
         
-        
+
         
     }
     
     res.redirect('/cart');
     
 });
-
 app.post("/removeitem", function(req, res) {
    
    
@@ -368,7 +441,7 @@ app.post('/removefromcart', async function(req, res) {
 
 /* Checkout Routes */
 app.get('/checkout', isAuthenticated, function(req, res){
-    
+
     let cart_stmt = 'select * from items natural join cart where cart.userId = ?';
     let cart_data = [req.session.sellerId];
     
@@ -429,6 +502,7 @@ app.post('/receipt', async function(req, res){
     
    res.redirect('/orderhistory');
 });
+
 
 app.get('/orderhistory', isAuthenticated, async function(req, res){
     

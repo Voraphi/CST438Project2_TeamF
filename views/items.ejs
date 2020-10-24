@@ -1,0 +1,44 @@
+<%- include ('templates/header'); -%>
+
+<%- include ('templates/authnav'); -%>
+
+<!-- Cart items -->
+
+<div class="small-container cart-page">
+    
+    <table>
+        <tr>
+            <th>Product you are selling</th>
+        </tr>
+        
+        <% var num = 0 %>
+        
+        <% results.forEach(function(r) { %>
+        
+            <tr>
+                <td>
+                    <div class="cart-info">
+                        <img src='<%= r.itemlink %>'>
+                        <div>
+                            <p><%= r.itemname %></p>
+                            <small>Price: $<%= r.price %></small>
+                            <br>
+                            
+                            <form action='/removeitem' method='POST'>
+                                <input type='number' class='form-control' name='itemId' value='<%= r.itemId %>' style="visibility: hidden;">
+                                <button type="submit" class="btn-danger">Remove</button>
+                            </form>
+                            <a class='btn btn-danger'  href='/updateitem/<%=r.itemId%>'>Update Item</a>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            
+            <% num++ %>
+        
+        <% });%>
+    </table>
+    </form>
+</div> 
+
+<%- include ('templates/footer'); -%>
