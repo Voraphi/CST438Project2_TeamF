@@ -5,6 +5,9 @@
 <!-- Cart items -->
 
 <div class="small-container cart-page">
+    <% if(!results.length) { %> 
+            <h3> Looks like you haven't added any items. Try it! </h3>
+    <% } else { %>
     
     <table>
         <tr>
@@ -12,6 +15,8 @@
         </tr>
         
         <% var num = 0 %>
+        
+        
         
         <% results.forEach(function(r) { %>
         
@@ -39,6 +44,8 @@
         <% });%>
     </table>
     </form>
+    
+    <% } %>
 </div> 
 
 <%- include ('templates/footer'); -%>

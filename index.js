@@ -154,10 +154,18 @@ app.post('/register', async function(req, res){
     });
     }
     
-    
-    
-    
 });
+
+app.get('/profile', isAuthenticated, async function(req, res) {
+    let stmt = 'select * from users where userId = ?';
+    let data = [req.session.sellerId];
+    
+    let q = await query(stmt, data);
+    
+    res.render('profile', { user : q } );
+    
+}); 
+
 
 app.get('/additem',isAuthenticated, function(req, res){
     res.render('additem');
@@ -175,7 +183,7 @@ app.post('/additem', function(req, res){
     let data = [req.session.sellerId, req.body.itemlink, req.body.itemname, req.body.color, req.body.category, parseInt(req.body.unitsleft), parseInt(req.body.price), req.body.desc];
     connection.query(stmt, data, function(error, result){
        if(error) throw error;
-       res.redirect('/additem');
+       res.redirect('/welcome');
     });
 });
 
@@ -230,10 +238,8 @@ app.get('/items', isAuthenticated, async function(req, res){
     
     connection.query(stmt,data, function(error, results) {
         if (error) throw error;
-        if (results.length) {
             // console.log(results)
             res.render("items", { results: results, userauth: req.session.authenticated });
-        }
     });
     
     
