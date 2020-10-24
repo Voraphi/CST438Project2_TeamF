@@ -18,21 +18,21 @@ app.use(session({
 }));
 app.set('view engine', 'ejs');
 
-const connection = mysql.createConnection({
-    host: process.env.HOST,
-    user: process.env.USERNAME,
-    password: process.env.PASSWORD,
-    database: process.env.DATABASE
-});
-connection.connect();
-
 // const connection = mysql.createConnection({
-//     host: 'localhost',
-//     user: 'admin',
-//     password: 'admin',
-//     database: 'webstoredb'
+//     host: process.env.HOST,
+//     user: process.env.USERNAME,
+//     password: process.env.PASSWORD,
+//     database: process.env.DATABASE
 // });
 // connection.connect();
+
+const connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'admin',
+    database: 'webstoredb'
+});
+connection.connect();
 
 
 /* Middleware */
@@ -444,9 +444,9 @@ app.get('/orderhistory', isAuthenticated, async function(req, res){
     let history = await query(oh_stmt, data);
     
     
-    console.log(dates);
+    // console.log(dates);
     
-    console.log(history);
+    // console.log(history);
     
     
     res.render('orderhistory', { dates : dates, history : history });

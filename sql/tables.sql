@@ -64,7 +64,7 @@ CREATE TABLE `orderhistory` (
 	`orderId` mediumint(9) NOT NULL,
 	`userId` mediumint(9) NOT NULL,
 	`itemId` mediumint(9) NOT NULL,
-  `itemlink` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
+  `itemlink` varchar(40000) COLLATE utf8_unicode_ci NOT NULL,
   `itemname` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `color` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
   `category` varchar(200) COLLATE utf8_unicode_ci NOT NULL,
