@@ -26,10 +26,7 @@ body{
 
 .cart-page{
 	margin: 80px auto;
-	margin-left:10px;
-	background-color: white;
 }
-
 table{
 	width:100%;
 	border-collapse: collapse;
@@ -63,76 +60,6 @@ td img{
 	margin-right: 10px;
 }
 
-h3{
-	color: ;
-}
-
-.row {
-  display: -ms-flexbox; 
-  display: flex;
-  -ms-flex-wrap: wrap; 
-  flex-wrap: wrap;
-  margin: 0 -16px;
-}
-
-.col-25 {
-  -ms-flex: 25%;
-  flex: 25%;
-  padding-right: 20px;
-  padding: 0 16px;
-}
-
-.col-50 {
-  -ms-flex: 50%; 
-  flex: 50%;
-  padding-left: 20px;
-  padding: 0 16px;
-}
-
-.col-75 {
-  -ms-flex: 75%;
-  flex: 75%;
-  padding: 0 16px;
-}
-
-/*.col-25,*/
-/*.col-50,*/
-/*.col-75 {*/
-/*  padding: 0 16px;*/
-/*}*/
-
-.container {
-  margin-left:5px;
-  background-color: #D8CCD0;
-  padding: 5px 20px 15px 20px;
-  border-radius: 3px;
-}
-
-cart{
-  background-color: black;
-}
-
-input[type=text] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-.btn {
-  background-color: #13A395;
-  color: white;
-  padding: 12px;
-  margin: 10px 0;
-  border: none;
-  width: 30%;
-  border-radius: 3px;
-  cursor: pointer;
-  font-size: 17px;
-}
-
-
-
 .footer{
 	font-size:10px;
 	color: purple;
@@ -162,69 +89,3 @@ h3 {
 	margin-top: 20px;
 	margin-bottom: 30px;
 }
-
-
-.row {
-  display: -ms-flexbox; 
-  display: flex;
-  -ms-flex-wrap: wrap; 
-  flex-wrap: wrap;
-  margin: 0 -16px;
-}
-
-.col-25 {
-  -ms-flex: 25%;
-  flex: 25%;
-  padding-right: 20px;
-  padding: 0 16px;
-}
-
-.col-50 {
-  -ms-flex: 50%; 
-  flex: 50%;
-  padding-left: 20px;
-  padding: 0 16px;
-}
-
-.col-75 {
-  -ms-flex: 75%;
-  flex: 75%;
-  padding: 0 16px;
-}
-
-/*.col-25,*/
-/*.col-50,*/
-/*.col-75 {*/
-/*  padding: 0 16px;*/
-/*}*/
-
-.container {
-  margin-left:5px;
-  background-color: #D8CCD0;
-  padding: 5px 20px 15px 20px;
-  border-radius: 3px;
-}
-
-cart{
-  background-color: black;
-}
-
-input[type=text] {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 12px;
-  border-radius: 10px;
-}
-
-/*.btn {*/
-/*  background-color: #13A395;*/
-/*  color: white;*/
-/*  padding: 12px;*/
-/*  margin: 10px 0;*/
-/*  border: none;*/
-/*  width: 30%;*/
-/*  border-radius: 3px;*/
-/*  cursor: pointer;*/
-/*  font-size: 17px;*/
-/*}*/
-
